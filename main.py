@@ -40,7 +40,7 @@ def halls(message):
   button_list = []
   for each in list_of_halls:
      button_list.append(InlineKeyboardButton(each, callback_data = each))
-  reply_markup=InlineKeyboardMarkup(build_menu(button_list,n_cols=1)) 
+  reply_markup=InlineKeyboardMarkup(build_menu(button_list,n_cols=1)) ,
   #n_cols = 1 is for single column and mutliple rows
   bot.send_message(
     chat_id=message.chat.id,
@@ -53,6 +53,7 @@ def callback_query(call):
     # if call.data == "Raffles Hall":
     #     bot.answer_callback_query(call.id, call.data)
     bot.answer_callback_query(call.id, call.data)
+    
 
 
 
