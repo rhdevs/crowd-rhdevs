@@ -119,9 +119,7 @@ def callback_query(call):
   # facilities in hall
   # each facility will have list of latest 5 votes
   rating_list = [0,0,0,0,0]
-  if user.venue and user.venue in db[user.hall]:
-    rating_list = db[user.hall][user.venue]
-
+  
   if call.data in data[user.hall]:
     user.venue = call.data
     print(f'{user.hall} {user.venue}')
@@ -134,40 +132,44 @@ def callback_query(call):
     reply_markup=InlineKeyboardMarkup(build_menu(button_list, n_cols=1))
     bot.answer_callback_query(call.id, call.data)
     # text in message depends on average
-    handleRatings(call, reply_markup, rating_list)
+    handleRatings(call, reply_markup, rating_list, user.hall, user.venue)
+    print(rating_list)
+
+  if user.venue and user.venue in db[user.hall]:
+    rating_list = db[user.hall][user.venue]
 
   if call.data == '0':
     rating_list.pop(0)
     rating_list.append(0)
     db[user.hall][user.venue] = rating_list
-    handleRatings(call, None, rating_list)
+    handleRatings(call, None, rating_list, user.hall, user.venue)
     
   if call.data == '0.5':
     print(rating_list.pop(0))
     rating_list.append(0.5)
     db[user.hall][user.venue] = rating_list
-    handleRatings(call, None, rating_list)
+    handleRatings(call, None, rating_list, user.hall, user.venue)
   if call.data == '1':
     rating_list.pop(0)
     rating_list.append(1)
     db[user.hall][user.venue] = rating_list
-    handleRatings(call, None, rating_list)
+    handleRatings(call, None, rating_list, user.hall, user.venue)
   
 
-def handleRatings(call, reply_markup, location):
+def handleRatings(call, reply_markup, location, hall, venue):
   average = sum(location) / len(location)
   print(average)
 
   if average <= 0.1:
-    bot.edit_message_text(chat_id=call.message.chat.id,                   message_id=call.message.message_id, text=f'Crowd level: \U0001F525', reply_markup=reply_markup)
+    bot.edit_message_text(chat_id=call.message.chat.id,                   message_id=call.message.message_id, text=f'Crowd level for {hall} {venue}: \n \U0001F525', reply_markup=reply_markup)
   elif average <= 0.3:
-    bot.edit_message_text(chat_id=call.message.chat.id,                   message_id=call.message.message_id, text=f'Crowd level: \U0001F525\U0001F525' ,reply_markup=reply_markup)
+    bot.edit_message_text(chat_id=call.message.chat.id,                   message_id=call.message.message_id, text=f'Crowd level for {hall} {venue}:\n \U0001F525\U0001F525' ,reply_markup=reply_markup)
   elif average <= 0.5:
-    bot.edit_message_text(chat_id=call.message.chat.id,                   message_id=call.message.message_id, text=f'Crowd level: \U0001F525\U0001F525\U0001F525' ,reply_markup=reply_markup)
+    bot.edit_message_text(chat_id=call.message.chat.id,                   message_id=call.message.message_id, text=f'Crowd level for {hall} {venue}:\n \U0001F525\U0001F525\U0001F525' ,reply_markup=reply_markup)
   elif average <= 0.7:
-    bot.edit_message_text(chat_id=call.message.chat.id,                   message_id=call.message.message_id, text=f'Crowd level: \U0001F525\U0001F525\U0001F525\U0001F525' ,reply_markup=reply_markup)
+    bot.edit_message_text(chat_id=call.message.chat.id,                   message_id=call.message.message_id, text=f'Crowd level for {hall} {venue}:\n \U0001F525\U0001F525\U0001F525\U0001F525' ,reply_markup=reply_markup)
   else: 
-    bot.edit_message_text(chat_id=call.message.chat.id,                   message_id=call.message.message_id, text=f'Crowd level: \U0001F525\U0001F525\U0001F525\U0001F525\U0001F525' ,reply_markup=reply_markup)
+    bot.edit_message_text(chat_id=call.message.chat.id,                   message_id=call.message.message_id, text=f'Crowd level for {hall} {venue}:\n \U0001F525\U0001F525\U0001F525\U0001F525\U0001F525' ,reply_markup=reply_markup)
   
 
 bot.infinity_polling()
