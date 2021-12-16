@@ -1,0 +1,2 @@
+    {"Gymnasium": 10,
+    "Dining Hall": 0, "Upper Lounge": 0, "TV Room": 0, "Basketball Court": 0, "Hard Court": 0}

@@ -7,6 +7,8 @@ authors = ["Your Name <you@example.com>"]
 [tool.poetry.dependencies]
 python = "^3.8"
 pyTelegramBotAPI = "^4.2.2"
+telegram = "^0.0.1"
+replit = "^3.2.4"
 
 [tool.poetry.dev-dependencies]
 

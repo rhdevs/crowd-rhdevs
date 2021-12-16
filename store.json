@@ -1,0 +1,23 @@
+{
+  "halls": 
+    ["Raffles Hall", "Temasek Hall", "Kent Ridge Hall",
+  "Eusoff Hall", "Sheares Hall", "King Edward VII Hall", "PGP Hall"],
+  "Raffles Hall":{"Gymnasium": 10, "Dining Hall": 10, "Upper Lounge": 10, "TV Room": 10, "Basketball Court": 10, "Hard Court": 10},
+
+  "Temasek Hall": 
+    ["Gymnasium", "Dining Hall", "Upper Lounge", "Multi-Purpose Hall", "Basketball Court"],
+  "Kent Ridge Hall": 
+    ["Gymnasium", "Dining Hall", "Upper Lounge", "Multi-Purpose Hall", "Basketball Court","Common-area"],
+  "Eusoff Hall": 
+    ["Gymnasium", "Dining Hall", "Multi-Purpose Hall", "Basketball Court","Lounge"],
+  "Sheares Hall": 
+    ["Gymnasium", "Dining Hall",  "Multi-Purpose Hall", "Court","Lounge"],
+  "King Edward VII Hall": 
+    ["Gymnasium", "Dining Hall",  "Multi-Purpose Hall", "Court"],
+  "PGP Hall": 
+    ["Gymnasium", "Dining Hall",  "Multi-Purpose Hall", "Court","Food-court"],
+  "Crowd-level":
+  [
+    "No space","Some space","Empty"
+  ]
+}
