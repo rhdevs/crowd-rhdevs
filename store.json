@@ -2,7 +2,7 @@
   "halls": 
     ["Raffles Hall", "Temasek Hall", "Kent Ridge Hall",
   "Eusoff Hall", "Sheares Hall", "King Edward VII Hall", "PGP Hall"],
-  "Raffles Hall":{"Gymnasium": 10, "Dining Hall": 10, "Upper Lounge": 10, "TV Room": 10, "Basketball Court": 10, "Hard Court": 10},
+  "Raffles Hall":["Gymnasium", "Dining Hall", "Upper Lounge", "TV Room", "Basketball Court", "Hard Court"],
 
   "Temasek Hall": 
     ["Gymnasium", "Dining Hall", "Upper Lounge", "Multi-Purpose Hall", "Basketball Court"],

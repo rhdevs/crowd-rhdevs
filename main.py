@@ -1,4 +1,3 @@
-from replit import db
 import os
 import telebot
 import json
@@ -16,10 +15,9 @@ f = open('store.json')
 data = json.load(f)
 # print(data['Raffles Hall'])
 # print(data['Raffles Hall']['Gymnasium'])
-db["Raffles Hall"] = {"Gym": 10, "Hall": 2}
-value = db["Raffles Hall"]["Gym"]
-
-
+# db["Raffles Hall"] = {"Gym": 10, "Hall": 2}
+# value = db["Raffles Hall"]["Gym"]
+db = {}
 user_dict = {}
 db["Gym"] = [0,0,0,0,0]
 # try hard code calculation, need to firebase instead
@@ -32,16 +30,11 @@ class User:
 
 @bot.message_handler(commands=['start'])
 def greet(message):
-  print(f'gym is {db["Gym"]}')
   process_hall_step(message)
-  
 
-  print(value)
-  print("\U0001f600")
 
 
 def process_hall_step(message):
-  print(f'Process Hall Step: {db["Raffles Hall"]["Gym"]}')
   try:
     chat_id = message.chat.id
     name = message.text
@@ -49,11 +42,10 @@ def process_hall_step(message):
     user_dict[chat_id] = user
     button_list = []
     # static list for options
-    #for each in data['halls']:
-    #  button_list.append(InlineKeyboardButton(each, callback_data = each))
+    for each in data['halls']:
+      button_list.append(InlineKeyboardButton(each, callback_data = each))
 
-    button_list.append(InlineKeyboardButton('Raffles Hall', callback_data = 'Raffles Hall'))
-    reply_markup=InlineKeyboardMarkup(build_menu(button_list,n_cols=1)) 
+    reply_markup=InlineKeyboardMarkup(build_menu(button_list, n_cols=1)) 
     #n_cols = 1 is for single column and mutliple rows
     bot.send_message(
       chat_id=chat_id,
@@ -64,36 +56,36 @@ def process_hall_step(message):
   except Exception:
     bot.reply_to(message, 'oooops')
 
-def process_venue_step(message):
-    try:
-      chat_id = message.chat.id
-      venue = message.text
-      #if not age.isdigit():
-      #    msg = bot.reply_to(message, 'Age should be a number. How old are you?')
-      #    bot.register_next_step_handler(msg, process_venue_step)
-      #    return
-      user = user_dict[chat_id]
-      user.venue = venue
-      markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
-      markup.add('Yes', 'No')
-      msg = bot.reply_to(message, 'Is there space', reply_markup=markup)
-      # bot.register_next_step_handler(msg, process_capacity_step)
-    except Exception as e:
-      bot.reply_to(message, 'oooops')
+# def process_venue_step(message):
+#     try:
+#       chat_id = message.chat.id
+#       venue = message.text
+#       #if not age.isdigit():
+#       #    msg = bot.reply_to(message, 'Age should be a number. How old are you?')
+#       #    bot.register_next_step_handler(msg, process_venue_step)
+#       #    return
+#       user = user_dict[chat_id]
+#       user.venue = venue
+#       markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+#       markup.add('Yes', 'No')
+#       msg = bot.reply_to(message, 'Is there space', reply_markup=markup)
+#       # bot.register_next_step_handler(msg, process_capacity_step)
+#     except Exception as e:
+#       bot.reply_to(message, 'oooops')
 
 
-def process_capacity_step(message):
-    try:
-      chat_id = message.chat.id
-      capacity = message.text
-      user = user_dict[chat_id]
-      if (capacity == u'Yes') or (capacity == u'No'):
-          user.capacity = capacity
-      else:
-          raise Exception("Unknown capacity")
-      bot.send_message(chat_id, 'Nice to meet you ' + user.name + '\n Venue:' + str(user.venue) + '\n Capacity:' + user.capacity)
-    except Exception as e:
-      bot.reply_to(message, 'oooops')
+# def process_capacity_step(message):
+#     try:
+#       chat_id = message.chat.id
+#       capacity = message.text
+#       user = user_dict[chat_id]
+#       if (capacity == u'Yes') or (capacity == u'No'):
+#           user.capacity = capacity
+#       else:
+#           raise Exception("Unknown capacity")
+#       bot.send_message(chat_id, 'Nice to meet you ' + user.name + '\n Venue:' + str(user.venue) + '\n Capacity:' + user.capacity)
+#     except Exception as e:
+#       bot.reply_to(message, 'oooops')
 
 def build_menu(buttons,n_cols,header_buttons=None,footer_buttons=None):
   menu = [buttons[i:i + n_cols] for i in range(0, len(buttons), n_cols)]
@@ -110,29 +102,31 @@ def callback_query(call):
   bot.answer_callback_query(call.id, call.data)
   if call.data in data['halls']:
     user.hall = call.data
+    
+    if user.hall not in db:
+      db[user.hall] = {}
+    print("DATABASE", db)
     print(user.hall)
     button_list = []
-    #for each in data[user.hall]:
-    #  button_list.append(InlineKeyboardButton(each, callback_data = each))
-    button_list.append(InlineKeyboardButton('Gymnasium', callback_data = 'Gymnasium'))
+    for each in data[user.hall]:
+     button_list.append(InlineKeyboardButton(each, callback_data = each))
+    
     reply_markup=InlineKeyboardMarkup(build_menu(button_list, n_cols=1))
     bot.answer_callback_query(call.id, call.data)
     bot.edit_message_text(chat_id=call.message.chat.id,                     message_id=call.message.message_id, text=f'You have chosen {user.hall}' ,reply_markup=reply_markup)
     #print(bot.message_text)
-    
+
   # facilities in hall
   # each facility will have list of latest 5 votes
+  rating_list = [0,0,0,0,0]
+  if user.venue and user.venue in db[user.hall]:
+    rating_list = db[user.hall][user.venue]
+
   if call.data in data[user.hall]:
-    print(data[user.hall][call.data])
-    # actual replit database will be a list
-    # crowdlevel = data[user.hall][call.data]
-    
-    # Show crowd insights
-    # remove this
-    # if type(crowdlevel) == int:
     user.venue = call.data
     print(f'{user.hall} {user.venue}')
     button_list = []
+
     # SPACE VOTING OPTIONS
     button_list.append(InlineKeyboardButton(text = 'Empty', callback_data = '0'))
     button_list.append(InlineKeyboardButton(text = 'Some Space', callback_data = '0.5'))
@@ -140,32 +134,28 @@ def callback_query(call):
     reply_markup=InlineKeyboardMarkup(build_menu(button_list, n_cols=1))
     bot.answer_callback_query(call.id, call.data)
     # text in message depends on average
-    handleRatings(call, reply_markup)
+    handleRatings(call, reply_markup, rating_list)
 
-  if call.data in data['Crowd-level']:
-    global space
-    space = space + 1
-    print(space)
-  # no space voted
   if call.data == '0':
-    db["Gym"].pop()
-    db["Gym"].insert(0,0)
-    handleRatings(call, None)
+    rating_list.pop(0)
+    rating_list.append(0)
+    db[user.hall][user.venue] = rating_list
+    handleRatings(call, None, rating_list)
     
   if call.data == '0.5':
-    db["Gym"].pop()
-    db["Gym"].insert(0,0.5)
-    print(db["Gym"])
-    handleRatings(call, None)
+    print(rating_list.pop(0))
+    rating_list.append(0.5)
+    db[user.hall][user.venue] = rating_list
+    handleRatings(call, None, rating_list)
   if call.data == '1':
-    db["Gym"].pop()
-    db["Gym"].insert(0,1)
-    print(db["Gym"])
-    handleRatings(call, None)
+    rating_list.pop(0)
+    rating_list.append(1)
+    db[user.hall][user.venue] = rating_list
+    handleRatings(call, None, rating_list)
   
 
-def handleRatings(call, reply_markup):
-  average = sum(db["Gym"]) / len(db["Gym"])
+def handleRatings(call, reply_markup, location):
+  average = sum(location) / len(location)
   print(average)
 
   if average <= 0.1:
